@@ -11,30 +11,20 @@ const SSRPage = ({ serverData }) => {
   
 export default SSRPage
 
-export async function getServerData(context) {
+export async function getServerData() {
   try {
-    const { shopifyProductId } = context.pageContext
-    const yotpoKey = process.env.YOTPO_API_KEY
-
-    if (shopifyProductId && yotpoKey) {
-      const config = {
-        method: "get",
-        url: `https://api.yotpo.com/v1/widget/${yotpoKey}/products/${shopifyProductId}/bottomline`,
-      }
-      const response = await axios(config)
-
-      if (response.status === 200)
-        return {
-          props: { reviews: response.data.response.bottomline },
-        }
+    const res = await fetch(`https://dog.ceo/api/breeds/image/random`)
+    if (!res.ok) {
+      throw new Error(`Response failed`)
     }
-
-    throw new Error(`Response failed`)
+    return {
+      props: await res.json(),
+    }
   } catch (error) {
     return {
       status: 500,
       headers: {},
-      props: {},
+      props: {}
     }
   }
 }

@@ -12,9 +12,15 @@ type SanityBifold implements ContentBlock {
   _key: String!
 }
 
+type SanityCallToAction implements ContentBlock {
+  _type: String!
+  _key: String!
+}
+
 # Define a union of all content block types
 union ContentBlocks =
     SanityBifold
+  | SanityCallToAction
 
 # Set the field type on `contentBlocks` fields
 # to the [ContentBlocks] union
