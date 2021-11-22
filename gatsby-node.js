@@ -1,6 +1,3 @@
-const fs = require("fs")
-const path = require("path")
-
 exports.createPages = ({ actions }) =>  {
   [1,2,3,4].forEach(id => {
     actions.createPage({
@@ -14,9 +11,30 @@ exports.createPages = ({ actions }) =>  {
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions
 
-  const typeDefs = fs.readFileSync(
-    path.resolve(__dirname, "schema.graphql"),
-    "utf8"
-  )
+  const typeDefs = `
+    interface ContentBlock {
+      _type: String!
+      _key: String!
+    }
+    
+    type SanityBifold implements ContentBlock {
+      _type: String!
+      _key: String!
+    }
+    
+    type SanityCallToAction implements ContentBlock {
+      _type: String!
+      _key: String!
+    }
+    
+    # Define a union of all content block types
+    union ContentBlocks =
+        SanityBifold
+      | SanityCallToAction
+    
+    type SanityPage implements Node {
+      contentBlocks: [ContentBlocks]
+    }
+  `
   createTypes(typeDefs)
 }
