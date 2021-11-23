@@ -8,15 +8,10 @@ exports.createPages = ({ actions }) =>  {
   })
 }
 
-exports.createSchemaCustomization = ({ actions }) => {
+exports.createSchemaCustomization = ({ actions, schema }) => {
   const { createTypes } = actions
 
   const typeDefs = `
-    interface ContentBlock {
-      _type: String!
-      _key: String!
-    }
-    
     type SanityBifold implements ContentBlock {
       _type: String!
       _key: String!
@@ -26,15 +21,38 @@ exports.createSchemaCustomization = ({ actions }) => {
       _type: String!
       _key: String!
     }
-    
-    # Define a union of all content block types
-    union ContentBlocks =
-        SanityBifold
-      | SanityCallToAction
-    
+
     type SanityPage implements Node {
       contentBlocks: [ContentBlocks]
     }
   `
-  createTypes(typeDefs)
+
+  const ContentBlock = schema.buildInterfaceType({
+    name: `ContentBlock`,
+    fields: {
+      _type: `String!`,
+      _key: `String!`,
+    },
+    resolveType: value => {
+      if (value._type === `bifold`) {
+        return `SanityBifold`
+      } else {
+        return `SanityCallToAction`
+      }
+    },
+  })
+
+  const ContentBlocks = schema.buildUnionType({
+    name: `ContentBlocks`,
+    types: [`SanityBifold`, `SanityCallToAction`],
+    resolveType: (value, info) => {
+      if (value._type === `bifold`) {
+        return `SanityBifold`
+      } else {
+        return `SanityCallToAction`
+      }
+    }
+  })
+
+  createTypes([ContentBlock, typeDefs, ContentBlocks])
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { graphql } from "gatsby"
 
 const SSRPage = ({ serverData }) => {
     return (
@@ -10,6 +11,16 @@ const SSRPage = ({ serverData }) => {
 }
   
 export default SSRPage
+
+export const query = graphql`
+  query PageQuery($id: String!) {
+    page: sanityPage(id: { eq: $id }) {
+      contentBlocks {
+        ...Blocks
+      }
+    }
+  }
+`
 
 export async function getServerData() {
   try {

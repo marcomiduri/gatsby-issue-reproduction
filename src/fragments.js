@@ -5,4 +5,8 @@ export const fragments = graphql`
     _type
     _key
   }
+  fragment Blocks on ContentBlocks {
+    # Common fields
+    ...ContentBlockBase
+  }
 `
