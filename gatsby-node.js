@@ -27,25 +27,19 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
     }
   `
 
-  const ContentBlock = schema.buildInterfaceType({
+  const contentBlockInterface = schema.buildInterfaceType({
     name: `ContentBlock`,
     fields: {
       _type: `String!`,
       _key: `String!`,
     },
-    resolveType: value => {
-      if (value._type === `bifold`) {
-        return `SanityBifold`
-      } else {
-        return `SanityCallToAction`
-      }
-    },
+    resolveType: value => value._type,
   })
 
-  const ContentBlocks = schema.buildUnionType({
+  const contentBlocksUnion = schema.buildUnionType({
     name: `ContentBlocks`,
     types: [`SanityBifold`, `SanityCallToAction`],
-    resolveType: (value, info) => {
+    resolveType: (value) => {
       if (value._type === `bifold`) {
         return `SanityBifold`
       } else {
@@ -54,5 +48,5 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
     }
   })
 
-  createTypes([ContentBlock, typeDefs, ContentBlocks])
+  createTypes([contentBlockInterface, typeDefs, contentBlocksUnion])
 }
