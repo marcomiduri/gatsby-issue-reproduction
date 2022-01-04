@@ -13,8 +13,8 @@ const SSRPage = ({ serverData }) => {
 export default SSRPage
 
 export const query = graphql`
-  query PageQuery($id: String!) {
-    page: sanityPage(id: { eq: $id }) {
+  query PageQuery {
+    page: sanityPage {
       contentBlocks {
         ...Blocks
       }
